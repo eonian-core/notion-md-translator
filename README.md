@@ -17,6 +17,14 @@ Install dependencies
   cd notion-md-translator
   yarn
 ```
+   
+## Development
+
+Build and start server
+
+```bash
+  yarn dev
+```
 
 
 ### Commands 
@@ -24,6 +32,16 @@ Install dependencies
 - `build` - Build project
 - `start` - Start server
 
+### Running Tests
+
+To run tests, run the following command
+
+```bash
+  # Unit tests on mocks
+  yarn test
+  # E2E tests with real requests
+  yarn test:e2e
+```
 
 ### Deployment
 

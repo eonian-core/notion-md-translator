@@ -1,48 +1,17 @@
+import * as express from 'express'
 import * as fs from 'node:fs'
-import * as http from 'node:http'
-import * as url from 'node:url'
 
-// set up web server
-const server = http.createServer(listener)
+// set up express web server
+const app = express()
+
+// set up static content
+app.use(express.static('public'))
 
 // last known count
 let count = 0
 
-// Map of file extensions to mime types
-const mimeTypes : Record<string, string> = {
-  ico: 'image/x-icon',
-  js: 'text/javascript',
-  css: 'text/css',
-  svg: 'image/svg+xml'
-}
-
-// Process requests based on pathname
-async function listener(request : http.IncomingMessage, response : http.ServerResponse) {
-  const { pathname } = url.parse(request.url as string)
-
-  if (pathname === '/') {
-    await main(request, response)
-  } else if (pathname && fs.existsSync(`public${pathname}`)) {
-    try {
-      const contents = fs.readFileSync(`public${pathname}`, 'utf-8')
-      const mimeType = mimeTypes[pathname.split('.').pop() as string] || 'application/octet-stream'
-
-      response.writeHead(200, { 'Content-Type': mimeType })
-      response.write(contents, 'utf-8')
-    } catch (error) {
-      response.writeHead(500, { 'Content-Type': 'text/plain' })
-      response.write(error + '\n')
-    }
-
-    response.end()
-  } else {
-    response.writeHead(404)
-    response.end('Not found.')
-  }
-}
-
 // Main page
-async function main(_request : http.IncomingMessage, response : http.ServerResponse) {
+app.get('/', async(_request, response) => {
   // increment counter in counter.txt file
   try {
     count = parseInt(fs.readFileSync('counter.txt', 'utf-8')) + 1
@@ -52,22 +21,20 @@ async function main(_request : http.IncomingMessage, response : http.ServerRespo
 
   fs.writeFileSync('counter.txt', count.toString())
 
+  console.log(`Received request. Count is ${count}`)
+
   // render HTML response
   try {
-    let contents = fs.readFileSync('views/index.tmpl', 'utf-8')
-    contents = contents.replace('@@COUNT@@', count.toString())
-
-    response.writeHead(200, { 'Content-Type': 'text/html' })
-    response.write(contents, 'utf-8')
+    const content = fs.readFileSync('views/index.tmpl', 'utf-8')
+      .replace('@@COUNT@@', count.toString())
+    response.set('Content-Type', 'text/html')
+    response.send(content)
   } catch (error) {
-    response.writeHead(500, { 'Content-Type': 'text/plain' })
-    response.write(error + '\n')
+    response.send()
   }
-
-  response.end()
-}
+})
 
 // Start web server on port 3000
-server.listen(3000, () => {
+app.listen(3000, () => {
   console.log('Server is listening on port 3000')
 })
