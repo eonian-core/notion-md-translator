@@ -8,6 +8,7 @@
     "start:watch": "nodemon build/server.js",
     "deploy": "rm -rf build && fly deploy",
     "test": "jest",
+    "test:update:snapshot": "jest --updateSnapshot",
     "test:watch": "jest --watch",
     "test:only": "jest --testPathPattern",
     "test:e2e": "jest --testMatch='**/*.e2e-spec.ts'",
@@ -27,6 +28,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@tryfabric/martian": "^1.2.4",
     "auth0": "^4.0.1",
     "express": "^4.18.2",
     "mongoose": "^7.5.3",
