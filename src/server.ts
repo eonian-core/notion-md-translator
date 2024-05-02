@@ -1,33 +1,26 @@
 import * as express from 'express'
 import * as fs from 'node:fs'
+import * as showdown from 'showdown'
 
 // set up express web server
 const app = express()
-
 // set up static content
 app.use(express.static('public'))
 
-// last known count
-let count = 0
 
+const md = new showdown.Converter()
 // Main page
 app.get('/', async(_request, response) => {
-  // increment counter in counter.txt file
-  try {
-    count = parseInt(fs.readFileSync('counter.txt', 'utf-8')) + 1
-  } catch {
-    count = 1
-  }
+  const readme = fs.readFileSync('README.md', 'utf-8')
 
-  fs.writeFileSync('counter.txt', count.toString())
-
-  console.log(`Received request. Count is ${count}`)
+  console.log(`Received request. Sending readme content.`)
 
   // render HTML response
   try {
-    const content = fs.readFileSync('views/index.tmpl', 'utf-8')
-      .replace('@@COUNT@@', count.toString())
     response.set('Content-Type', 'text/html')
+
+    const content = fs.readFileSync('views/index.tmpl', 'utf-8')
+      .replace('@@MAIN@@', md.makeHtml(readme.toString()))
     response.send(content)
   } catch (error) {
     response.send()
