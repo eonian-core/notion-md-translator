@@ -125,7 +125,7 @@ To deploy this project run
 
 ## Made by Eonian
 
-[Eonian](https://www.github.com/octokatherine) internal project. We trying to be as transparent as possible with our users, as part of this practice we publishing this project.
+[Eonian](https://eonian.finance) internal project. We trying to be as transparent as possible with our users, as part of this practice we publishing this project.
 You can also use it for own development. Any contributions and suggestions are welcome!
 
 ## Contributing
